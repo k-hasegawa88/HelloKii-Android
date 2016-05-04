@@ -19,6 +19,7 @@
 
 package com.kii.world;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,11 +46,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kii.cloud.storage.Kii;
+import com.kii.cloud.storage.KiiACL;
+import com.kii.cloud.storage.KiiACLEntry;
+import com.kii.cloud.storage.KiiAnyAuthenticatedUser;
 import com.kii.cloud.storage.KiiBucket;
+import com.kii.cloud.storage.KiiGroup;
 import com.kii.cloud.storage.KiiObject;
 import com.kii.cloud.storage.KiiUser;
+import com.kii.cloud.storage.callback.KiiACLCallBack;
+import com.kii.cloud.storage.callback.KiiGroupCallBack;
 import com.kii.cloud.storage.callback.KiiObjectCallBack;
 import com.kii.cloud.storage.callback.KiiQueryCallBack;
+import com.kii.cloud.storage.callback.KiiUserCallBack;
+import com.kii.cloud.storage.exception.app.BadRequestException;
+import com.kii.cloud.storage.exception.app.ConflictException;
+import com.kii.cloud.storage.exception.app.ForbiddenException;
+import com.kii.cloud.storage.exception.app.NotFoundException;
+import com.kii.cloud.storage.exception.app.UnauthorizedException;
+import com.kii.cloud.storage.exception.app.UndefinedException;
 import com.kii.cloud.storage.query.KiiQuery;
 import com.kii.cloud.storage.query.KiiQueryResult;
 
@@ -171,7 +188,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
         query.sortByDesc("_created");
 
         // define the bucket to query
-        KiiBucket bucket = KiiUser.getCurrentUser().bucket(BUCKET_NAME);
+        KiiBucket bucket = Kii.bucket("mainBucket");
 
         // perform the query
         bucket.query(new KiiQueryCallBack<KiiObject>() {
@@ -190,6 +207,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
                     List<KiiObject> objLists = result.getResult();
                     for (KiiObject obj : objLists) {
                         mListAdapter.add(obj);
+//Log.i("str",obj.getString(OBJECT_KEY));
+//                        showToast(obj.getString("TEST"));
                     }
 
                     // tell the console and the user it was a success!
@@ -213,7 +232,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     // the user has chosen to create an object from the options menu.
     // perform that action here...
-    public void addItem(View v) {
+    public void addItem(View v) throws Exception {
 
         // show a progress dialog to the user
         mProgress = ProgressDialog.show(MainActivity.this, "",
@@ -222,12 +241,80 @@ public class MainActivity extends Activity implements OnItemClickListener {
         // create an incremented title for the object
         String value = "MyObject " + (++mObjectCount);
 
-        // get a reference to a KiiBucket
-        KiiBucket bucket = KiiUser.getCurrentUser().bucket(BUCKET_NAME);
+//        // get a reference to a KiiBucket
+//        KiiBucket bucket = KiiUser.getCurrentUser().bucket(BUCKET_NAME);
+
+//        KiiGroup group =  KiiGroup.groupWithID("room1");
+//        bucket = group.bucket(BUCKET_NAME);
+
+        KiiUser user = KiiUser.getCurrentUser();
+//        //ここでこける
+//        List<KiiGroup> existingGroup = user.memberOfGroups(new KiiUserCallBack() {
+//
+//        });
+
+        // Create Application Scope Bucket
+        KiiBucket appBucket = Kii.bucket("mainBucket");
+//        showToast("debug info 002");
+
+
+////        // 既に同じメンバーのグループが存在するかチェックする
+//        boolean isExistGroup = false;
+//        for (KiiGroup kiiGroup : existingGroup) {
+//            if (TextUtils.equals(kiiGroup.getGroupName(),"roomtest")) {
+//                isExistGroup = true;
+////                return kiiGroup;
+//            }
+//        }
+//
+//        showToast("debug info 003");
+//
+//        if(!isExistGroup) {
+//            // Chat用のグループを作成
+//            KiiGroup kiiGroup = Kii.group("roomtest", null);
+//            kiiGroup.save(new KiiGroupCallBack() {
+//                @Override
+//                public void onSaveCompleted(int token, KiiGroup group, Exception exception) {
+//                    if (exception != null) {
+//                        // Error handling
+//                        return;
+//                    }
+//                    Uri groupUri = group.toUri();
+//                    String groupID = group.getID();
+//                }
+//            });
+//                //ACL エントリは初期化処理等で 1 度だけ書き換え、次回の実行時には再設定しないような実装が必要です
+//            KiiBucket groupBucket = Kii.group("roomtest",null).bucket("MainBucket");
+//            KiiACL bucketACL = groupBucket.acl();
+//            bucketACL.putACLEntry(new KiiACLEntry(KiiAnyAuthenticatedUser.create(),KiiACL.BucketAction.QUERY_OBJECTS_IN_BUCKET,true));
+//            bucketACL.putACLEntry(new KiiACLEntry(KiiAnyAuthenticatedUser.create(),KiiACL.BucketAction.CREATE_OBJECTS_IN_BUCKET,true));
+////?        bucketACL.putACLEntry(new KiiACLEntry(KiiAnyAuthenticatedUser.create(),KiiACL.BucketAction.READ_OBJECTS_IN_BUCKET,true));
+//            bucketACL.save(new KiiACLCallBack() {
+//                @Override
+//                public void onSaveCompleted(int token,KiiACL acl,Exception exception) {
+//                    if(exception != null) {
+//                        return;
+//                    }
+//                }
+//            });
+//
+//        }
+//
+//
+////        KiiUser target = KiiUser.getCurrentUser();//.createByUri(Uri.parse(this.chatFriend.getUri()));
+////        target.refresh();
+////        kiiGroup.addUser(target);
+//
+//
+//
+//        KiiBucket groupBucket = Kii.group("roomtest",null).bucket("MainBucket");
+//
+
 
         // create a new KiiObject and set a key/value
-        KiiObject obj = bucket.object();
+        KiiObject obj = appBucket.object();
         obj.set(OBJECT_KEY, value);
+        obj.set("TEST","ほにゃらら");
 
         // save the object asynchronously
         obj.save(new KiiObjectCallBack() {
@@ -356,7 +443,11 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        MainActivity.this.addItem(null);
+        try {
+            MainActivity.this.addItem(null);
+        } catch (Exception e) {
+
+        }
         return true;
     }
 
