@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "772927140313",
+    "project_id": "minna-atsumare"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772927140313:android:6314f98c52ac446d",
+        "android_client_info": {
+          "package_name": "com.minna.atsumare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPfkPs8MeLO0YUx4S0lPCgfvDozdvQA9A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

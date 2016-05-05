@@ -6,6 +6,11 @@
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- *** add following lines *** -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- *** up to this point *** -->
 
     <application android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
@@ -19,6 +24,35 @@
             </intent-filter>
         </activity>
         <activity android:name="com.kii.world.MainActivity" />
+        <!-- *** add following lines *** -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.kii.world.MyGcmListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.kii.world.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.kii.world.RegistrationIntentService"
+            android:exported="false">
+        </service>
+        <!-- *** up to this point *** -->
 
     </application>
 

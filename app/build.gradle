@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.kii.world"
+        applicationId "com.minna.atsumare"
         minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
@@ -18,11 +18,12 @@ android {
         }
     }
 }
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile ('com.kii:cloud-sdk:2.4.3:library@aar'){
         transitive=true
     }
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    apply plugin: 'com.google.gms.google-services'
 }

@@ -28,6 +28,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -153,6 +154,12 @@ public class MainActivity extends Activity implements OnItemClickListener {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        //ブロードキャストレシーバーを発信
+        Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+        startService(intent);
+
+
 
         // set our view to the xml in res/layout/main.xml
         setContentView(R.layout.main);
