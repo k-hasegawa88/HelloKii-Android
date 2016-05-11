@@ -461,4 +461,20 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        HelloKii.activityResumed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        HelloKii.activityPaused();
+    }
+
+
+
+
 }

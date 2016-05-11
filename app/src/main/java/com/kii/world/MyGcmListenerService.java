@@ -1,6 +1,13 @@
 package com.kii.world;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,12 +42,22 @@ public class MyGcmListenerService extends GcmListenerService {
             case DIRECT_PUSH:
                 DirectPushMessage directMsg = (DirectPushMessage)message;
                 Log.d(TAG, "DIRECT_PUSH Received");
-//トーストを使おうとするとエラーで落ちるが、ここを通っていることは確認できた
-//                Toast.makeText(this,"Received",Toast.LENGTH_LONG).show();
+
+                if(HelloKii.isActivityVisible()) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    this.startActivity(intent);
+                } else {
+                    sendNotification("MainActivity isn't ACTIVE");
+                }
+
+
+
                 break;
         }
     }
-/*
+
+
   private void sendNotification(String message) {
     Intent intent = new Intent(this, MainActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -61,5 +78,4 @@ public class MyGcmListenerService extends GcmListenerService {
 
     notificationManager.notify(0, notificationBuilder.build());
   }
-*/
 }
