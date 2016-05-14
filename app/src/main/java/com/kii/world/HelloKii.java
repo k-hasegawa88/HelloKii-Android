@@ -33,4 +33,18 @@ public class HelloKii extends Application {
         Kii.initialize("844722b7", "e6dcfa638e000507e04f7e6a614b3318", Site.JP);
     }
 
+    public static boolean isActivityVisible() {
+        return activityVisible;
+    }
+
+    public static void activityResumed() {
+        activityVisible = true;
+    }
+
+    public static void activityPaused() {
+        activityVisible = false;
+    }
+
+    private static boolean activityVisible;
+
 }
